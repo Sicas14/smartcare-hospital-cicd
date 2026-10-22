@@ -36,17 +36,30 @@ bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData
                 bat '"%DOCKER%" build -t sicas/smartcare-frontend:latest ./frontend'
             }
         }
-        stage('Push Backend Image') {
+        
+   
+        stage('Push Images to Docker Hub') {
             steps {
-                bat '"%DOCKER%" push sicas/smartcare-backend:latest'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKERHUB_USER',
+                    passwordVariable: 'DOCKERHUB_TOKEN'
+                )]) {
+                    bat '''
+                        @echo off
+                        set "DOCKER_CONFIG=%WORKSPACE%\\.docker-config"
+                        if not exist "%DOCKER_CONFIG%" mkdir "%DOCKER_CONFIG%"
+                        echo %DOCKERHUB_TOKEN%| "%DOCKER%" login -u "%DOCKERHUB_USER%" --password-stdin
+                        if errorlevel 1 exit /b 1
+                        "%DOCKER%" push sicas/smartcare-backend:latest
+                        if errorlevel 1 exit /b 1
+                        "%DOCKER%" push sicas/smartcare-frontend:latest
+                        if errorlevel 1 exit /b 1
+                    '''
+                }
             }
         }
 
-        stage('Push Frontend Image') {
-            steps {
-                bat '"%DOCKER%" push sicas/smartcare-frontend:latest'
-            }
-        }
            stage('Deploy to Kubernetes') {
             steps {
                 bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" rollout restart deployment/smartcare-backend'
