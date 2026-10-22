@@ -36,5 +36,12 @@ bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData
                 bat '"%DOCKER%" build -t sicas/smartcare-frontend:latest ./frontend'
             }
         }
-    }
+           stage('Deploy to Kubernetes') {
+            steps {
+                bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" rollout restart deployment/smartcare-backend'
+                bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" rollout restart deployment/smartcare-frontend'
+                bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" rollout status deployment/smartcare-backend --timeout=120s'
+                bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" rollout status deployment/smartcare-frontend --timeout=120s'
+            }
+        } }
 }
