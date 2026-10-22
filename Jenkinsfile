@@ -16,8 +16,8 @@ pipeline {
      stage('Check Project') {
     steps {
         bat 'dir'
-        bat '"C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" config current-context'
-    }
+        bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" config current-context'
+bat 'set KUBECONFIG=C:\\Users\\adars\\.kube\\config&& "C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" get deployments'    }
 }
         stage('Check Docker') {
             steps {
