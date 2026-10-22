@@ -13,12 +13,12 @@ pipeline {
             }
         }
 
-        stage('Check Project') {
-            steps {
-                bat 'dir'
-            }
-        }
-
+     stage('Check Project') {
+    steps {
+        bat 'dir'
+        bat '"C:\\Users\\adars\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe" config current-context'
+    }
+}
         stage('Check Docker') {
             steps {
                 bat '"%DOCKER%" --version'
