@@ -1,0 +1,33 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartcare-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartcare-frontend
+  template:
+    metadata:
+      labels:
+        app: smartcare-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: sicas/smartcare-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartcare-frontend
+spec:
+  selector:
+    app: smartcare-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: NodePort

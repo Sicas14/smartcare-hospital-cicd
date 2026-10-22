@@ -1,0 +1,36 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartcare-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smartcare-backend
+  template:
+    metadata:
+      labels:
+        app: smartcare-backend
+    spec:
+      containers:
+        - name: backend
+          image: sicas/smartcare-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartcare-backend
+spec:
+  selector:
+    app: smartcare-backend
+  ports:
+    - port: 5000
+      targetPort: 5000
+  type: ClusterIP

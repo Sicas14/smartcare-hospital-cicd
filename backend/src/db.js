@@ -1,7 +1,14 @@
+
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
+const fs = require("fs");
 
-const dbPath = path.join(__dirname, "../data/hospital.db");
+const dataDir = path.join(__dirname, "../data");
+
+// Create the data directory if it does not exist
+fs.mkdirSync(dataDir, { recursive: true });
+
+const dbPath = path.join(dataDir, "hospital.db");
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
@@ -12,7 +19,6 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 db.serialize(() => {
-
   db.run(`
     CREATE TABLE IF NOT EXISTS patients (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,12 +52,8 @@ db.serialize(() => {
       reason TEXT,
       status TEXT DEFAULT 'Scheduled',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-      FOREIGN KEY (patient_id)
-      REFERENCES patients(id),
-
-      FOREIGN KEY (doctor_id)
-      REFERENCES doctors(id)
+      FOREIGN KEY (patient_id) REFERENCES patients(id),
+      FOREIGN KEY (doctor_id) REFERENCES doctors(id)
     )
   `);
 
